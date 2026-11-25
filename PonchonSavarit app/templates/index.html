@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="app-root" content="{{ request.script_root }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#26384a">
+
+  <title>Ponchon-Savarit App</title>
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- LEFT: COLUMN REPRESENTATION -->
+    <aside class="panel left-panel">
+
+      <header class="panel-heading">
+        <h1>
+          Rectification Column<br>
+          <span>Representation</span>
+        </h1>
+      </header>
+
+      <section class="column-card" aria-label="Schematic representation of the rectification column">
+
+<div class="column-results">
+
+          <!-- Linke Seite: Stufen und Feed-Temperatur -->
+          <div class="column-stage-results">
+              <div class="stage-result upper-stage">
+                  <span id="upperStages">–</span>
+              </div>
+
+              <div class="stage-result temperature-result">
+                  <span id="feedTemperature">– K</span>
+              </div>
+
+              <div class="stage-result lower-stage">
+                  <span id="lowerStages">–</span>
+              </div>
+          </div>
+
+          <!-- Kolonne mit Energiefeldern oben und unten -->
+          <div class="column-center">
+
+              <div class="energy-result" id="qC-container">
+                  q<sub>C</sub> (kJ/mol) = <span id="qC">–</span>
+              </div>
+
+              <div class="column-image">
+                  <img src="{{ url_for('static', filename='column_sketch.png') }}"
+                      alt="Rectification column">
+              </div>
+
+              <div class="energy-result" id="qB-container">
+                  q<sub>B</sub> (kJ/mol) = <span id="qB">–</span>
+              </div>
+
+          </div>
+
+          <!-- Rechte Seite: Temperaturen -->
+          <div class="column-temperature-results">
+              <div class="stage-result temperature-result">
+                  <span id="topTemperature">– K</span>
+              </div>
+
+              <div class="stage-result temperature-result">
+                  <span id="bottomTemperature">– K</span>
+              </div>
+          </div>
+
+      </div>
+
+      </section>
+
+      <div class="logo-container">
+          <img src="{{ url_for('static', filename='logo1.png') }}" alt="Logo 1">
+          <img src="{{ url_for('static', filename='logo2.png') }}" alt="Logo 2">
+          <img src="{{ url_for('static', filename='logo3.png') }}" alt="Logo 3">
+      </div>
+
+      <p class="teaching-note">
+        The use of this app is only permitted for teaching purposes!
+      </p>
+
+    </aside>
+
+
+    <!-- CENTER: PROCESS DIAGRAM -->
+    <main class="panel center-panel">
+<div class="center-topbar">
+
+    <a
+        href="http://127.0.0.1:5000/back/ponchon"
+        class="launcher-back">
+        <span>←</span>
+        Back to Launcher
+    </a>
+
+    <span class="status-pill status-info">
+        <span class="status-dot"></span>
+        <span id="appStatus">Ready</span>
+    </span>
+
+</div>
+
+
+      <!-- DIAGRAM -->
+      <section class="diagram-card">
+
+      <div class="diagram-toolbar">
+
+          <div>
+              <h3 id="diagramTitle">y – x diagram</h3>
+          </div>
+
+          <!-- h-x-y diagram scale switch -->
+          <div class="hxy-scale-switch" id="hxyScaleSwitch" hidden>
+              <button
+                  id="hxyVleScale"
+                  class="active"
+                  type="button">
+                  VLE scale
+              </button>
+
+              <button
+                  id="hxyAutoScale"
+                  type="button">
+                  Autoscale
+              </button>
+          </div>
+
+      </div>
+
+
+        <div class="chart-wrap" id="chartWrap">
+
+
+          
+          <div
+            id="demoChart"
+            style="width: 100%; height: 500px;">
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- VARIABLES / RESULTS SWITCH -->
+      <div class="view-switch-row">
+
+        <span class="switch-caption">
+          Display
+        </span>
+
+        <div class="segmented" role="group" aria-label="Choose display">
+
+          <button
+            class="segment active"
+            data-view="variables"
+            type="button">
+            Show variables
+          </button>
+
+          <button
+            class="segment"
+            data-view="results"
+            type="button">
+            Show results
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+ 
+
+<section class="info-card variables-legend" id="variablesView">
+
+    <div class="info-card-heading">
+        <div>
+            <h3>Variables &amp; Nomenclature</h3>
+            <p class="legend-subtitle">
+                Overview of the symbols, variables and equations used
+                throughout the application.
+            </p>
+        </div>
+    </div>
+
+    <!-- 1. MATERIAL STREAMS -->
+    <div class="legend-section">
+        <h4>1. Material streams</h4>
+
+        <div class="legend-table-wrapper">
+            <table class="legend-table stream-legend">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Feed</th>
+                        <th>Top product</th>
+                        <th>Bottom product</th>
+                        <th>Internal vapor</th>
+                        <th>Internal liquid</th>
+                        <th>Reflux enricher</th>
+                        <th>Reflux stripper</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <th>Molar flow</th>
+                        <td></td>
+                        <td><i><span class="overdot">F</span></i></td>
+                        <td><i><span class="overdot">D</span></i></td>
+                        <td><i><span class="overdot">B</span></i></td>
+                        <td><i><span class="overdot">G</span></i></td>
+                        <td><i><span class="overdot">L</span></i></td>
+                        <td><i>R<sup>L</sup><span class="overdot">D</span></i></td>
+                        <td><i>R<sup>G</sup><span class="overdot">B</span></i></td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            Molar fraction
+                            <small>(Lower boiling compound 1)</small>
+                        </th>
+                        <td></td>
+                        <td><i>z</i></td>
+                        <td><i>x<sup>D</sup></i></td>
+                        <td><i>x<sup>B</sup></i></td>
+                        <td><i>y</i></td>
+                        <td><i>x</i></td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+
+                    <tr>
+                        <th>Caloric factor</th>
+                        <td>
+                            <i>
+                                q<sup>j</sup> =
+                                <span class="fraction">
+                                    <span>h<sup>j,V</sup> − h<sup>j</sup></span>
+                                    <span>h<sup>j,V</sup> − h<sup>j,L</sup></span>
+                                </span>
+                            </i>
+                        </td>
+                        <td><i>q<sup>F</sup></i></td>
+                        <td><i>q<sup>D</sup></i></td>
+                        <td><i>q<sup>B</sup></i></td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- 2. PROCESS PARAMETERS -->
+    <div class="legend-section">
+        <h4>2. Process parameters</h4>
+
+        <div class="legend-two-columns">
+
+            <!-- LEFT COLUMN -->
+            <div class="legend-table-wrapper">
+                <table class="legend-table">
+                    <tbody>
+
+                        <tr>
+                            <th>Pressure</th>
+                            <td><i>p</i></td>
+                            <td>[<i>p</i>] = bar</td>
+                        </tr>
+
+                        <tr>
+                            <th>Temperature</th>
+                            <td><i>T</i></td>
+                            <td>[<i>T</i>] = K</td>
+                        </tr>
+
+                        <tr>
+                            <th>Molar enthalpy</th>
+                            <td><i>h</i></td>
+                            <td>[<i>h</i>] = kJ/mol</td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                Molar heating utility
+                                <small>(Reboiler)</small>
+                            </th>
+                            <td><i>q<sub>B</sub></i></td>
+                            <td>[<i>q<sub>B</sub></i>] = kJ/mol</td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                Molar cooling utility
+                                <small>(Condenser)</small>
+                            </th>
+                            <td><i>q<sub>C</sub></i></td>
+                            <td>[<i>q<sub>C</sub></i>] = kJ/mol</td>
+                        </tr>
+
+                        <tr>
+                            <th>Separation factor (Feed)</th>
+                            <td><i>α<sub>12</sub><sup>F</sup></i></td>
+                            <td>
+                                <i>
+                                    α<sub>12</sub><sup>F</sup> =
+                                    <span class="fraction">
+                                        <span>(y<sub>1</sub> / x<sub>1</sub>)<sup>F</sup></span>
+                                        <span>(y<sub>2</sub> / x<sub>2</sub>)<sup>F</sup></span>
+                                    </span>
+                                </i>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!-- RIGHT COLUMN -->
+            <div class="legend-table-wrapper">
+
+                <table class="legend-table">
+                    <tbody>
+
+                        <tr>
+                            <th>Minimum reflux ratio</th>
+                            <td><i>R<sup>L</sup><sub>min</sub></i></td>
+                        </tr>
+
+                        <tr>
+                            <th>Reflux ratio</th>
+                            <td><i>R<sup>L</sup></i></td>
+                        </tr>
+
+                        <tr>
+                            <th>Reflux ratio factor</th>
+                            <td><i>f</i></td>
+                        </tr>
+
+                        <tr>
+                            <th>Separation stage index</th>
+                            <td><i>n</i></td>
+                        </tr>
+
+                        <tr>
+                            <th>Total number of separation stages</th>
+                            <td><i>n<sub>total</sub></i></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="legend-equation">
+                    <span class="equation-formula">
+                        R<sup>L</sup> = f · R<sup>L</sup><sub>min</sub>
+                    </span>
+                    <span>Reflux ratio</span>
+                </div>
+
+                <div class="legend-equation">
+                    <span class="equation-formula">
+                        n = {1, 2, …, n<sub>total</sub>}
+                    </span>
+                    <span>Separation stage indices</span>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 3. ENTHALPY DEFINITIONS -->
+    <div class="legend-section">
+        <h4>3. Enthalpy definitions</h4>
+
+        <div class="legend-table-wrapper">
+            <table class="legend-table enthalpy-legend">
+                <tbody>
+
+                    <tr>
+                        <th>
+                            <i>h<sup>j,V</sup> − h<sup>F</sup></i>
+                        </th>
+                        <td>
+                            Enthalpy difference of flow j as saturated vapor
+                            and in added state
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>
+                            <i>h<sup>j,V</sup> − h<sup>j,L</sup></i>
+                        </th>
+                        <td>
+                            Enthalpy difference of flow j as saturated vapor
+                            and boiling liquid (specific heat of vaporization)
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+
+
+
+ <!-- RESULTS OVERVIEW -->
+<section class="info-card hidden" id="resultsView">
+
+  <div class="info-card-heading">
+
+    <div>
+      <p class="eyebrow">CALCULATION OUTPUT</p>
+      <h3>Results overview</h3>
+    </div>
+
+    <span class="small-tag" id="resultsCount">
+      0 calculations
+    </span>
+
+  </div>
+
+  <div class="results-table-wrapper">
+
+    <table class="results-table">
+
+<thead>
+  <tr>
+    <th>Mixture</th>
+    <th>p (bar)</th>
+    <th>z<sup>F</sup></th>
+    <th>z<sup>D</sup></th>
+    <th>z<sup>B</sup></th>
+    <th>f</th>
+    <th>q<sup>B</sup></th>
+    <th>T<sup>B</sup></th>
+    <th>q<sup>F</sup></th>
+    <th>T<sup>F</sup></th>
+    <th>q<sup>D</sup></th>
+    <th>T<sup>D</sup></th>
+    <th>n<sub>Enr</sub></th>
+    <th>n<sub>Str</sub></th>
+    <th>n<sub>total</sub></th>
+    <th>R<sup>L</sup><sub>min</sub></th>
+    <th>R<sup>L</sup></th>
+    <th>α<sub>12</sub><sup>F</sup></th>
+  </tr>
+</thead>
+
+<tbody id="resultsTableBody">
+  <tr>
+    <td colspan="15" class="empty-state">
+      No calculations yet.
+    </td>
+  </tr>
+</tbody>
+
+
+    </table>
+
+  </div>
+
+</section>
+
+    </main>
+
+
+    <!-- RIGHT: CONTROLS -->
+    <aside class="panel right-panel">
+
+      <div class="right-panel-inner">
+
+
+        <!-- INPUT 1 -->
+        <h2 class="side-title">
+          Input 1
+        </h2>
+
+        <section class="control-section">
+
+          <label class="field-label" for="mixture">
+            Mixture
+          </label>
+
+          <select id="mixture">
+            <option value="ethanol-water">Ethanol / Water</option>
+            <option value="methanol-water">Methanol / Water</option>
+            <option value="water-1-butanol">Water / 1-Butanol</option>
+          </select>
+
+
+          <div class="field-row">
+
+            <label for="pressure">p</label>
+
+            <select id="pressure">
+              <option value="">Select pressure</option>
+            </select>
+
+            <span class="unit">bar</span>
+
+          </div>
+
+
+          <button
+            class="primary-button"
+            id="calculateVLE"
+            type="button">
+            Calculate VLE
+          </button>
+
+
+          <!-- VLE STATUS BOX + QUESTION MARK -->
+          <div class="status-help-row">
+
+            <p
+              class="inline-message"
+              id="vleMessage"
+              aria-live="polite"></p>
+
+            <button
+              class="help-icon"
+              type="button"
+              data-info="vle"
+              aria-label="Information about VLE">
+              ?
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- INPUT 2 -->
+        <h2 class="side-title section-title">
+          Input 2
+        </h2>
+
+        <section class="control-section">
+
+
+          <div class="field-row">
+
+            <label for="feed">z<sup>F</sup></label>
+
+            <input
+              id="feed"
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.30">
+
+            <span class="unit">mol/mol</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="distillate">z<sup>D</sup></label>
+
+            <input
+              id="distillate"
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.75">
+
+            <span class="unit">mol/mol</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="bottom">z<sup>B</sup></label>
+
+            <input
+              id="bottom"
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.05">
+
+            <span class="unit">mol/mol</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="reflux">f</label>
+
+            <input
+              id="reflux"
+              type="number"
+              min="0"
+              step="0.01"
+              value="1.00">
+
+            <span class="unit">–</span>
+
+          </div>
+
+
+          
+
+<div class="caloric-section">
+    <div class="caloric-knobs">
+
+        <div class="caloric-control">
+            <label for="caloricA">q<sup>B</sup></label>
+            <div class="q-knob" data-target="caloricA">
+                <span class="q-knob-stop left"></span>
+                <span class="q-knob-stop right"></span>
+                <span class="q-knob-pointer"></span>
+                <span class="q-knob-center"></span>
+            </div>
+            <div class="caloric-input-row">
+                <input type="number" id="caloricA"
+                       min="0.7" max="1.0" step="0.01" value="1.0">
+            </div>
+        </div>
+
+        <div class="caloric-control">
+            <label for="caloricF">q<sup>F</sup></label>
+            <div class="q-knob" data-target="caloricF">
+                <span class="q-knob-stop left"></span>
+                <span class="q-knob-stop right"></span>
+                <span class="q-knob-pointer"></span>
+                <span class="q-knob-center"></span>
+            </div>
+            <div class="caloric-input-row">
+                <input type="number" id="caloricF"
+                       min="-0.05" max="1.05" step="0.01" value="1.0">
+            </div>
+        </div>
+
+        <div class="caloric-control">
+            <label for="caloricE">q<sup>D</sup></label>
+            <div class="q-knob" data-target="caloricE">
+                <span class="q-knob-stop left"></span>
+                <span class="q-knob-stop right"></span>
+                <span class="q-knob-pointer"></span>
+                <span class="q-knob-center"></span>
+            </div>
+            <div class="caloric-input-row">
+                <input type="number" id="caloricE"
+                       min="1.0" max="1.05" step="0.01" value="1.0">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+          <button
+            class="primary-button"
+            id="calculateStages"
+            type="button">
+            Calculate no. of separation stages
+          </button>
+
+
+          <!-- STAGES STATUS BOX + QUESTION MARK -->
+          <div class="status-help-row">
+
+            <p
+              class="inline-message"
+              id="stageMessage"
+              aria-live="polite"></p>
+
+            <button
+              class="help-icon"
+              type="button"
+              data-info="stages"
+              aria-label="Information about separation stages">
+              ?
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- RESULTS -->
+        <h2 class="side-title section-title">
+          Results
+        </h2>
+
+        <section class="control-section results-fields">
+
+
+          <div class="field-row">
+
+            <label for="totalStages">
+              n<sub>total</sub>
+            </label>
+
+            <input
+              id="totalStages"
+              type="text"
+              placeholder="—"
+              readonly>
+
+            <span class="unit">–</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="minReflux">
+              R<sup>L</sup><sub>min</sub>
+            </label>
+
+            <input
+              id="minReflux"
+              type="text"
+              placeholder="—"
+              readonly>
+
+            <span class="unit">–</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="actualReflux">
+              R<sup>L</sup>
+            </label>
+
+            <input
+              id="actualReflux"
+              type="text"
+              placeholder="—"
+              readonly>
+
+            <span class="unit">–</span>
+
+          </div>
+
+
+          <div class="field-row">
+
+            <label for="relativeVolatility">
+              α<sub>12</sub><sup>F</sup>
+            </label>
+
+            <input
+              id="relativeVolatility"
+              type="text"
+              placeholder="—"
+              readonly>
+
+            <span class="unit">–</span>
+
+          </div>
+
+        </section>
+
+
+        <!-- DIAGRAM SELECTOR -->
+        <section class="diagram-choice">
+
+          <h2 class="side-title">
+            Choose diagram
+          </h2>
+
+          <div class="rotary-selector">
+
+            <button
+              class="rotary-switch"
+              id="diagramSwitch"
+              type="button"
+              aria-label="Diagram selector. Current selection: y – x. Press to change diagram."
+              aria-valuemin="1"
+              aria-valuemax="4"
+              aria-valuenow="1"
+              aria-valuetext="y – x">
+
+              <span class="rotary-markers" aria-hidden="true">
+                <i></i><i></i><i></i><i></i>
+              </span>
+
+              <span class="rotary-knob" aria-hidden="true">
+                <span class="rotary-pointer"></span>
+              </span>
+
+            </button>
+
+
+            <div class="rotary-readout">
+
+              <span
+                class="rotary-position"
+                id="diagramPosition">
+                Position 1 of 4
+              </span>
+
+              <strong id="diagramSelection">
+                y – x
+              </strong>
+
+              <span class="rotary-hint">
+                Click the dial or use ← / →
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="rotary-labels" aria-hidden="true">
+
+            <span class="active" data-position="0">
+              1 · h – x,y
+            </span>
+
+            <span data-position="1">
+              2 · y – x
+            </span>
+
+            <span data-position="2">
+              3 · T – x,y
+            </span>
+
+            <span data-position="3">
+              4 · n – x,T
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <!-- SAVE AND RESET BUTTONS -->
+        <div class="button-row">
+
+          <button
+            class="secondary-button"
+            id="saveButton"
+            type="button">
+            Save
+          </button>
+
+          <button
+            class="secondary-button"
+            id="resetButton"
+            type="button">
+            Reset
+          </button>
+
+        </div>
+
+
+        <!-- SHARED SAVE / RESET STATUS BOX + QUESTION MARK -->
+        <div class="status-help-row">
+
+          <p
+            class="inline-message"
+            id="generalMessage"
+            aria-live="polite"></p>
+
+          <button
+            class="help-icon"
+            type="button"
+            data-info="saveReset"
+            aria-label="Information about Save and Reset">
+            ?
+          </button>
+
+        </div>
+
+
+        <!-- LARGE INFORMATION OUTPUT -->
+        <section class="information-output">
+
+          <div class="information-heading">
+
+            <span class="information-symbol">
+              i
+            </span>
+
+            <h3>Information</h3>
+
+          </div>
+
+          <div id="infoOutput" aria-live="polite">
+
+            <p>
+              Select one of the question mark buttons to display
+              additional information about the corresponding function.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        <!-- HELP AND INFORMATION -->
+        <section class="help-card">
+
+            <h3>Help & Information</h3>
+
+            <p>
+                1. Select a binary mixture and pressure.
+            </p>
+            <p>
+                2. Calculate the vapor-liquid equilibrium.
+            </p>
+
+            <p>
+                3. Enter feed and product compositions.
+            </p>
+
+            <p>
+                4. Set the  reflux ratio factor f and all process streams thermal conditions.
+            </p>
+
+            <p>
+                5. Calculate the number of theoretical separation stages.
+            </p>
+
+
+          <a
+            class="text-button"
+            id="manualButton"
+            href="{{ url_for('static', filename='user_manual.pdf') }}"
+            download="user_manual.pdf">
+            Download user manual
+          </a>
+
+        </section>
+
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/diagrams.js') }}"></script>
+<script src="{{ url_for('static', filename='js/calculations.js') }}"></script>
+
+</body>
+</html>

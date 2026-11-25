@@ -1,0 +1,2098 @@
+
+/* =========================================================
+   1. GLOBAL SETTINGS
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+:root {
+    /* Main color palette */
+    --navy: #26384a;
+    --blue: #2673a8;
+    --blue-light: #e8f2f8;
+    --blue-dark: #195b89;
+
+    /* Status colors */
+    --success: #3b8b65;
+    --warning: #d97735;
+    --error: #b04438;
+    --info: #64748b;
+
+    /* Neutral colors */
+    --background: #edf1f5;
+    --panel: #ffffff;
+    --text: #34495a;
+    --muted: #71808e;
+    --line: #dbe2e8;
+    --border: #dbe2e8;
+
+    /* Layout */
+    --radius: 10px;
+    --shadow: 0 3px 12px #1d34450c;
+}
+
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #263442;
+    background: var(--background);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+
+/* =========================================================
+   2. MAIN LAYOUT – THREE COLUMNS
+========================================================= */
+
+.app-shell {
+    display: grid;
+    grid-template-columns:
+        minmax(220px, 0.7fr)
+        minmax(400px, 1.7fr)
+        minmax(290px, 0.75fr);
+    align-items: stretch;
+    gap: 15px;
+    width: 100%;
+    max-width: 1800px;
+    min-height: calc(100vh - 30px);
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.panel {
+    min-width: 0;
+    min-height: 100%;
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    box-shadow: var(--shadow);
+    align-self: stretch;
+}
+
+.left-panel {
+    padding: 18px;
+    background: #fff;
+}
+
+.center-panel {
+    padding: 14px;
+    background: #fff;
+}
+
+.right-panel {
+    min-width: 0;
+    padding: 0;
+    background: #fff;
+}
+
+.right-panel-inner {
+    min-width: 0;
+    min-height: 100%;
+    height: 100%;
+    padding: 14px 16px;
+    background: #fff;
+}
+
+
+/* =========================================================
+   3. HEADINGS AND TEXT
+========================================================= */
+
+.panel-heading h1 {
+    margin: 0 0 20px;
+    text-align: left;
+    color: var(--navy);
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.panel-heading span {
+    color: var(--blue);
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.side-title {
+    margin: 18px 0 11px;
+    text-align: center;
+    color: var(--navy);
+    font-size: 16px;
+    line-height: 1.3;
+}
+
+.section-title {
+    margin-top: 20px;
+}
+
+.eyebrow {
+    margin: 0;
+    color: var(--blue);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .09em;
+}
+
+.muted,
+.note {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   4. LEFT PANEL – PROCESS REPRESENTATION
+========================================================= */
+
+.phase-selector {
+    margin-bottom: 14px;
+}
+
+.process-card {
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    text-align: center;
+}
+
+.process-card h3 {
+    margin: 3px 0 10px;
+    font-size: 15px;
+}
+
+.process-card img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+}
+
+/* Stage count – centered number */
+
+.stage-count {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 55px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #dcecf5;
+    font-size: 12px;
+}
+
+.stage-count strong {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--navy);
+    font-size: 26px;
+    text-align: center;
+}
+
+/* Logos */
+
+.logo-container {
+    display: grid;
+    gap: 12px;
+    justify-items: center;
+    margin: 22px 0 14px;
+}
+
+.logo-container img {
+    max-width: 85%;
+    max-height: 60px;
+    object-fit: contain;
+}
+
+.teaching-note {
+    color: #68727b;
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+
+/* =========================================================
+   5. SEGMENTED BUTTONS AND GENERAL SWITCHES
+========================================================= */
+
+.segmented {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    border-radius: 9px;
+    background: #e9eef2;
+}
+
+.segment {
+    flex: 1;
+    padding: 9px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #617080;
+    font-size: 12px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.segment.active {
+    background: #fff;
+    color: var(--blue);
+    font-weight: 700;
+    box-shadow: 0 1px 5px #172b3a1c;
+}
+
+.scale-switch .segment {
+    padding: 8px 10px;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   6. CENTER PANEL – DIAGRAM
+========================================================= */
+
+.center-topbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #edf6f0;
+    color: #39714c;
+    font-size: 12px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #45a66a;
+}
+
+.diagram-card,
+.info-card {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+}
+
+.diagram-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+}
+
+.diagram-toolbar h2 {
+    margin: 3px 0 9px;
+    color: var(--navy);
+    font-size: 18px;
+}
+
+.scale-switch-wrap {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.scale-caption {
+    color: var(--muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.chart-wrap {
+    width: 100%;
+    min-height: 490px;
+}
+
+.view-switch-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 0;
+}
+
+.view-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.switch-caption {
+  margin-right: auto;
+}
+
+.view-switch-row .segmented {
+  margin-left: auto;
+}
+
+.view-switch-row .segment {
+  padding: 6px 14px; /* Button-Größe */
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.switch-caption {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   7. RIGHT PANEL – INPUT FIELDS
+========================================================= */
+
+.control-section {
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 78px minmax(65px, 1fr) 55px;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+.field-row label {
+    font-weight: 700;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid #cbd5de;
+    border-radius: 6px;
+    background: #fff;
+    color: #263442;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #9bc9e1;
+    outline-offset: 1px;
+}
+
+input[readonly] {
+    background: #eef2f5;
+}
+
+.unit {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   8. COMPACT INLINE TOGGLE SWITCHES
+========================================================= */
+
+.inline-choice {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 42px;
+    padding: 7px 10px;
+    border: 1px solid #e0e8ef;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #fff, #f5f8fb);
+    transition: all .25s ease;
+}
+
+.choice-label {
+    flex: 1;
+    color: #a0aab5;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    transition: all .25s ease;
+}
+
+.choice-label.active {
+    color: #176b9c;
+    font-weight: 800;
+}
+
+/* Switch track */
+
+.mini-switch {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 22px;
+}
+
+.mini-switch input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.mini-switch-slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    background: #cbd5df;
+    box-shadow: inset 0 1px 3px #0002;
+    cursor: pointer;
+    transition: all .25s ease;
+}
+
+/* Moving knob */
+
+.mini-switch-slider::before {
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 5px #0003;
+    content: "";
+    transition: all .25s ease;
+}
+
+.mini-switch input:checked + .mini-switch-slider {
+    background: linear-gradient(135deg, #1686bd, #176b9c);
+    box-shadow: 0 2px 6px #1686bd44;
+}
+
+.mini-switch input:checked + .mini-switch-slider::before {
+    transform: translateX(18px);
+}
+
+.mini-switch input:focus-visible + .mini-switch-slider {
+    outline: 3px solid #9bc9e1;
+    outline-offset: 3px;
+}
+
+/* Disabled state – counter-current */
+
+.inline-choice.disabled {
+    opacity: .35;
+    background: #e7ebef;
+    border-color: #d5dce3;
+    filter: grayscale(1);
+    box-shadow: inset 0 1px 3px #0000000a;
+    cursor: not-allowed;
+}
+
+.inline-choice.disabled .choice-label {
+    color: #aeb6be !important;
+}
+
+.inline-choice.disabled .mini-switch-slider {
+    background: #b8c0c8 !important;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.inline-choice.disabled .mini-switch-slider::before {
+    background: #e1e5e9;
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   9. INPUT 2 – GROUPED OPTIONS AND CRITERION INPUTS
+========================================================= */
+
+.input-option {
+    margin-top: 15px;
+    padding: 12px;
+    border: 1px solid #e1e9ef;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #fff, #f7f9fc);
+}
+
+.option-heading {
+    margin-bottom: 9px;
+}
+
+.option-title {
+    display: block;
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .3px;
+}
+
+.option-hint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 8px 0 0;
+    color: #8795a2;
+    font-size: 10px;
+    font-style: italic;
+}
+
+.option-hint[hidden] {
+    display: none;
+}
+
+.hint-icon {
+    color: #6d9bb8;
+    font-size: 12px;
+}
+
+.criterion-inputs {
+    margin-top: 9px;
+    padding: 2px 7px 0;
+    border-top: 1px solid #edf0f3;
+}
+
+.criterion-inputs .field-row {
+    margin: 11px 0 5px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   10. BUTTONS AND STATUS MESSAGES
+========================================================= */
+
+.primary-button,
+.secondary-button {
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 7px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .18s;
+}
+
+.primary-button {
+    width: 100%;
+    margin-top: 10px;
+    background: var(--blue);
+    color: #fff;
+}
+
+.primary-button:hover {
+    background: #20688f;
+    transform: translateY(-1px);
+}
+
+.secondary-button {
+    flex: 1;
+    border: 1px solid #cbd4dc;
+    background: #fff;
+    color: var(--navy);
+}
+
+.calculate-extraction {
+    margin-top: 13px;
+}
+
+.button-row {
+    display: flex;
+    gap: 9px;
+    margin-top: 16px;
+}
+
+.status-help-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 29px;
+}
+
+.inline-message {
+    flex: 1;
+    min-height: 16px;
+    margin: 5px 0;
+    color: #b33b36;
+    font-size: 11px;
+}
+
+.help-icon {
+    width: 23px;
+    height: 23px;
+    border: 1px solid #b8c5d0;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--blue);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   11. DIAGRAM SELECTOR
+========================================================= */
+
+.diagram-choice {
+    padding: 13px;
+}
+
+.diagram-selector {
+    position: relative;
+    padding: 4px 2px 2px;
+}
+
+.selector-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    height: 48px;
+    padding: 4px;
+    border-radius: 25px;
+    background: #e9eef2;
+    overflow: hidden;
+}
+
+.selector-highlight {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: 40px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #2878a8, #45a0c8);
+    box-shadow: 0 3px 8px #23698b44;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1);
+}
+
+.selector-track.is-kx .selector-highlight {
+    transform: translateX(100%);
+}
+
+.selector-option-label {
+    z-index: 1;
+    color: #617080;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    pointer-events: none;
+    transition: color .2s;
+}
+
+.selector-track:not(.is-kx) .selector-option-label:first-of-type,
+.selector-track.is-kx .selector-option-label:last-of-type {
+    color: #fff;
+}
+
+.selector-range {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    height: 52px;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.selector-readout {
+    display: grid;
+    gap: 4px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.selector-readout span:first-child {
+    color: #8a97a3;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+
+.selector-readout strong {
+    color: var(--navy);
+    font-size: 13px;
+}
+
+.selector-readout span:last-child {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   12. RESULTS AND TABLES
+========================================================= */
+
+.info-card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-card h2 {
+    margin: 3px 0 5px;
+    font-size: 20px;
+}
+
+.legend-section {
+    margin-top: 20px;
+}
+
+.legend-section h3 {
+    margin: 0 0 9px;
+    font-size: 15px;
+}
+
+.table-wrap,
+.results-table-wrapper {
+    overflow-x: auto;
+}
+
+.legend-table,
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.legend-table th,
+.legend-table td,
+.results-table th,
+.results-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+}
+
+.legend-table th {
+    background: #f5f7f9;
+}
+
+.results-table th {
+    background: #edf2f6;
+    white-space: nowrap;
+}
+
+.small-tag {
+    padding: 6px 9px;
+    border-radius: 20px;
+    background: #eef3f7;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.empty-state {
+    padding: 25px !important;
+    color: var(--muted);
+    text-align: center !important;
+}
+
+.results-fields .field-row {
+    margin: 8px 0;
+}
+
+
+/* =========================================================
+   13. INFORMATION AND HELP
+========================================================= */
+
+.information-output,
+.help-card {
+    margin-top: 15px;
+    padding: 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.information-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.information-heading h3,
+.help-card h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.information-symbol {
+    display: grid;
+    place-items: center;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background: #e4f0f7;
+    color: var(--blue);
+    font-weight: 700;
+}
+
+.help-card ol {
+    padding-left: 19px;
+    color: #526170;
+}
+
+.help-card li {
+    margin: 7px 0;
+}
+
+.text-button {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   14. ADDITIONAL DIAGRAM / RESULTS COMPONENTS
+========================================================= */
+
+.column-results {
+    min-height: 330px;
+    grid-template-columns: 35px minmax(0, 1fr) 35px;
+}
+
+.column-image {
+    height: 320px;
+}
+
+.column-center {
+    height: 330px;
+}
+
+.input2-inner-box {
+    padding: 12px;
+}
+
+.variables-legend .legend-two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   15. RESPONSIVE DESIGN – TABLET
+========================================================= */
+
+@media (max-width: 1050px) {
+    .app-shell {
+        grid-template-columns:
+            minmax(200px, 0.8fr)
+            minmax(350px, 1.5fr);
+        align-items: stretch;
+    }
+
+    .right-panel {
+        grid-column: 1 / -1;
+    }
+
+    .right-panel-inner {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        height: auto;
+    }
+
+    .right-panel-inner > .side-title {
+        grid-column: 1 / -1;
+    }
+
+    .right-panel-inner > .control-section,
+    .right-panel-inner > .primary-button,
+    .right-panel-inner > .status-help-row,
+    .right-panel-inner > .button-row,
+    .right-panel-inner > .information-output,
+    .right-panel-inner > .help-card {
+        align-self: start;
+    }
+}
+
+
+/* =========================================================
+   16. RESPONSIVE DESIGN – MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+    .app-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 100vh;
+        padding: 9px;
+    }
+
+    .panel {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+    }
+
+    .left-panel {
+        position: static;
+        padding: 14px;
+    }
+
+    .center-panel {
+        padding: 14px;
+    }
+
+    .right-panel-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: auto;
+        padding: 14px;
+    }
+
+    .chart-wrap {
+        min-height: 350px;
+    }
+
+    .diagram-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .scale-switch-wrap {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .view-switch-row {
+        flex-wrap: wrap;
+    }
+
+    .column-results {
+        min-height: 330px;
+        grid-template-columns: 35px minmax(0, 1fr) 35px;
+    }
+
+    .column-image {
+        height: 320px;
+    }
+
+    .column-center {
+        height: 330px;
+    }
+
+    .input2-inner-box {
+        padding: 10px;
+    }
+
+    .variables-legend .legend-two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   17. SMALL MOBILE SCREENS
+========================================================= */
+
+@media (max-width: 380px) {
+    .app-shell {
+        padding: 6px;
+    }
+
+    .left-panel,
+    .center-panel,
+    .right-panel-inner {
+        padding: 10px;
+    }
+
+    .input2-inner-box {
+        padding: 8px;
+    }
+}
+
+/* K-x diagram: square plot container */
+#mainChart.chart-wrap.kx-chart {
+    width: 100%;
+    max-width: 550px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    margin: 0 auto;
+}
+
+
+/* =====================================================
+   18. RIGHT PANEL – TYPOGRAPHY AND COLORS
+===================================================== */
+
+.right-panel {
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    background: var(--panel);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.right-panel .right-panel-inner {
+    color: var(--text);
+}
+
+/* Section headings */
+.right-panel .side-title {
+    margin: 0 0 12px;
+    color: var(--navy);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: left;
+}
+
+.right-panel .section-title {
+    margin-top: 22px;
+}
+
+/* Labels and option headings */
+.right-panel .field-label,
+.right-panel .field-row label,
+.right-panel .option-title,
+.right-panel .choice-label {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Input fields */
+.right-panel input,
+.right-panel select,
+.right-panel textarea {
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+.right-panel input:focus,
+.right-panel select:focus {
+    outline: 2px solid #9bc9e1;
+    outline-offset: 1px;
+}
+
+/* Units and explanatory text */
+.right-panel .unit {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.right-panel .option-hint,
+.right-panel .inline-message,
+.right-panel .information-output,
+.right-panel .help-card {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* Information and help headings */
+.right-panel .information-heading h3,
+.right-panel .help-card h3 {
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   19. RIGHT PANEL – CONTAINER STYLING
+===================================================== */
+
+.right-panel .control-section,
+.right-panel .diagram-choice,
+.right-panel .input-options-box,
+.right-panel .help-card,
+.right-panel .information-output {
+    background: #f8fafb;
+    border: 1px solid #e5eaee;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+
+/* =====================================================
+   20. SOLVENT AND CRITERION SWITCHES
+===================================================== */
+
+/* Default state */
+.right-panel .mini-switch-slider {
+    background: var(--blue);
+    transition: background-color 0.2s ease;
+}
+
+/* Toggled state */
+.right-panel .mini-switch input:checked + .mini-switch-slider {
+    background: #aeb8c2;
+}
+
+/* Switch labels */
+.right-panel .choice-label {
+    transition: color 0.2s ease;
+}
+
+.right-panel .choice-label.active {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.right-panel .choice-label:not(.active) {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+/* Disabled state */
+.right-panel .inline-choice.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   21. RIGHT PANEL – BUTTONS
+===================================================== */
+
+.right-panel .primary-button {
+    background: var(--blue);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 1;
+    visibility: visible;
+}
+
+.right-panel .primary-button:hover {
+    background: var(--blue-dark);
+    color: #ffffff;
+}
+
+.right-panel .secondary-button {
+    color: var(--text);
+    font-size: 12px;
+    opacity: 1;
+}
+
+.right-panel .secondary-button:hover {
+    background: #e9eef2;
+    color: var(--blue-dark);
+}
+
+/* Help buttons */
+.right-panel .help-icon {
+    color: var(--blue);
+    border-color: #9aafbd;
+}
+
+.right-panel .help-icon:hover {
+    color: #ffffff;
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+/* Button transitions */
+.right-panel button {
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+/* =====================================================
+   22. DIAGRAM SELECTOR
+===================================================== */
+
+.diagram-selector .selector-track {
+    position: relative;
+}
+
+.diagram-selector .selector-highlight {
+    z-index: 1;
+    background: linear-gradient(135deg, var(--blue), #45a0c8);
+    transition: transform 0.25s ease;
+}
+
+.diagram-selector .selector-option-label {
+    position: relative;
+    z-index: 2;
+    color: #758591;
+    background: transparent;
+    transition: color 0.2s ease;
+}
+
+.diagram-selector .selector-option-label.active {
+    color: #ffffff;
+}
+
+/* Selected option */
+.selector-track:not(.is-kx) .selector-option-label:first-of-type,
+.selector-track.is-kx .selector-option-label:last-of-type {
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   23. CALCULATION STATUS MESSAGES
+===================================================== */
+
+.inline-message {
+    min-height: 18px;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+}
+
+.inline-message.status-success {
+    color: var(--success);
+}
+
+.inline-message.status-warning {
+    color: var(--warning);
+}
+
+.inline-message.status-error {
+    color: var(--error);
+}
+
+.inline-message.status-info {
+    color: var(--info);
+}
+
+
+/* =====================================================
+   24. INFORMATION OUTPUT
+===================================================== */
+
+.information-output h3 {
+    margin: 0 0 10px;
+    color: var(--navy);
+}
+
+.information-output p {
+    line-height: 1.55;
+}
+
+.information-warnings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.information-warning {
+    padding: 12px;
+    border-left: 3px solid var(--warning);
+    border-radius: 5px;
+    background: rgba(217, 119, 53, 0.08);
+}
+
+.information-warning h4 {
+    margin: 0 0 6px;
+    color: var(--warning);
+}
+
+.information-warning p {
+    margin: 5px 0;
+}
+
+.warning-recommendation {
+    font-weight: 600;
+}
+
+.information-summary {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(100, 116, 139, 0.10);
+}
+
+
+.view-switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+    padding: 12px 0;
+}
+
+.switch-caption {
+    margin-right: auto;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.view-switch-row .segmented {
+    margin-left: auto;
+}
+
+.view-switch-row .segment {
+    padding: 6px 14px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* ==================================================
+   INFORMATION SUMMARY
+================================================== */
+
+#infoOutput .information-summary {
+    margin: 14px 0;
+    padding: 10px 13px;
+
+    background: #f3f5f6;
+    border: 1px solid #e1e6e9;
+    border-left: 3px solid #2b4e66;
+
+    border-radius: 0;
+
+    color: #445e70;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* Warning state for the main calculation status */
+.status-pill.warning {
+    background: rgba(217, 119, 53, 0.10);
+    color: var(--warning);
+}
+
+.status-pill.warning .status-dot {
+    background-color: var(--warning);
+}
+
+.status-pill.error {
+    background: rgba(176, 68, 56, 0.10);
+    color: var(--error);
+}
+
+.status-pill.error .status-dot {
+    background-color: var(--error);
+}
+
+/* ==================================================
+   EXTRACTION RESULTS TABLE
+   ================================================== */
+
+#resultsView .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+#resultsView .results-table {
+    min-width: 1500px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#resultsView .results-table th,
+#resultsView .results-table td {
+    white-space: nowrap;
+    padding: 12px 14px;
+    text-align: center;
+}
+
+#resultsView .results-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#resultsView .results-table tbody tr:hover {
+    background: #f7f9fa;
+}
+
+
+/* Variables and nomenclature */
+
+.variables-legend .legend-subtitle {
+    color: var(--muted, #718096);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-top: 6px;
+}
+
+.variables-legend .legend-section {
+    margin-top: 22px;
+}
+
+.variables-legend .legend-section h4 {
+    margin-bottom: 10px;
+}
+
+.legend-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.variables-legend .legend-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.variables-legend .legend-table th,
+.variables-legend .legend-table td {
+    padding: 9px 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.variables-legend .legend-table th:first-child {
+    text-align: left;
+}
+
+.variables-legend .legend-table small {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: normal;
+    margin-top: 3px;
+}
+
+.legend-two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+}
+
+.legend-column {
+    min-width: 0;
+}
+
+.legend-equation {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid var(--border, #d9e0e7);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.equation-formula {
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    font-style: italic;
+    line-height: 1.8;
+}
+
+.legend-equation > span:last-child {
+    color: var(--muted, #718096);
+    font-size: 0.78rem;
+}
+
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 1.5;
+    margin: 0 3px;
+}
+
+.fraction > span:first-child {
+    border-bottom: 1px solid currentColor;
+    padding: 0 4px 3px;
+}
+
+.fraction > span:last-child {
+    padding: 3px 4px 0;
+}
+
+@media (max-width: 900px) {
+    .legend-two-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   VARIABLES & NOMENCLATURE
+   ========================================================= */
+
+.variables-legend {
+    font-size: 0.88rem;
+}
+
+.variables-legend h3 {
+    font-size: 1.15rem;
+}
+
+.variables-legend .legend-subtitle {
+    font-size: 0.82rem;
+}
+
+.variables-legend h4 {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.legend-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.legend-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+}
+
+.legend-table th,
+.legend-table td {
+    padding: 7px 10px;
+    border: 1px solid var(--border-color, #d5dce5);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.legend-table th {
+    font-weight: 500;
+}
+
+.legend-table td {
+    font-weight: 400;
+}
+
+
+/* Formula blocks below the parameter table */
+
+.legend-equations {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.legend-equation {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #d5dce5);
+    border-radius: 8px;
+    text-align: center;
+    background: var(--card-background, #ffffff);
+}
+
+.legend-equation .equation-formula {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+.legend-equation span:last-child {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text-muted, #737d8b);
+}
+
+.legend-section {
+    margin-top: 18px;
+}
+
+.legend-two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 750px) {
+    .legend-two-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .legend-equations {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Display the two cross-current equations side by side */
+.cross-current-equations {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.cross-current-equations .legend-equation {
+    min-width: 0;
+    text-align: center;
+}
+
+/* Keep the equations readable on narrow screens */
+@media (max-width: 600px) {
+    .cross-current-equations {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   VARIABLES LEGEND – BLUE MATHEMATICAL SYMBOLS
+   ========================================================= */
+
+/* All mathematical symbols */
+.variables-legend td i,
+.variables-legend th i,
+.variables-legend .equation-formula,
+.variables-legend .legend-equation i,
+.variables-legend .fraction {
+    color:var(--blue-dark);
+    font-weight: 400;
+}
+
+/* Keep superscripts and subscripts blue */
+.variables-legend sup,
+.variables-legend sub {
+    color: var(--blue-dark);
+    font-weight: 400;
+}
+
+/* Keep equation labels in the normal text color */
+.variables-legend .legend-equation > span:last-child {
+    color: inherit;
+    font-weight: 400;
+}
+
+/* Ensure formula text is not bold */
+.variables-legend .equation-formula {
+    font-weight: 400;
+}
+
+/* Process parameters: left column 1/3, right column 2/3 */
+.legend-section .legend-two-columns {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) !important;
+    gap: 20px;
+    width: 100%;
+    align-items: start;
+}
+
+.legend-section .legend-two-columns > .legend-column {
+    width: 100% !important;
+    min-width: 0;
+    flex: none !important;
+}
+
+.legend-section .legend-two-columns .legend-table-wrapper,
+.legend-section .legend-two-columns .legend-table {
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .legend-section .legend-two-columns {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Display cross-current equations individually below the table */
+.cross-current-equations {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 11px;
+    margin-top: 11px;
+}
+
+.cross-current-equations .legend-equation {
+    width: 100%;
+    text-align: left;
+}
+
+/* Use Arial throughout the Variables section */
+.variables-legend,
+.variables-legend * {
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Center cross-current equations only */
+.cross-current-equations .legend-equation {
+    text-align: center;
+}
+
+/* =====================================================
+   COMPACT RESULTS – TWO-COLUMN LAYOUT
+===================================================== */
+
+.right-panel .results-fields {
+    padding: 9px 10px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 3px;
+    align-items: center;
+}
+
+.right-panel .results-grid .field-row {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 24px;
+    align-items: center;
+    gap: 4px;
+    margin: 3px 0;
+    font-size: 11px;
+}
+
+.right-panel .results-grid .field-row label {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.right-panel .results-grid .field-row input {
+    min-width: 0;
+    padding: 6px 4px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.right-panel .results-grid .field-row .unit {
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+/* Keep the two-column layout on smaller screens where possible */
+@media (max-width: 380px) {
+    .results-grid {
+        column-gap: 7px;
+    }
+
+    .right-panel .results-grid .field-row {
+        grid-template-columns: 25px minmax(0, 1fr) 20px;
+        gap: 3px;
+    }
+}
+
+/* =====================================================
+   RIGHT PANEL – COMPACT SECTION SPACING
+===================================================== */
+
+/* Reduce spacing between section headings and content */
+.right-panel .side-title {
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+/* Reduce spacing before Input 2, Results and Choose diagram */
+.right-panel .section-title {
+    margin-top: 12px;
+}
+
+/* Make input sections slightly more compact */
+.right-panel .control-section {
+    padding: 10px;
+}
+
+/* Reduce spacing inside input fields */
+.right-panel .field-row {
+    margin: 7px 0;
+}
+
+/* Reduce spacing around grouped options */
+.right-panel .input-option {
+    margin-top: 10px;
+    padding: 9px;
+}
+
+/* Compact results section */
+.right-panel .results-fields {
+    padding: 8px 9px;
+}
+
+/* =====================================================
+   COMPACT RESULTS – NARROWER OUTPUT FIELDS
+===================================================== */
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 3px;
+    align-items: center;
+}
+
+.right-panel .results-grid .field-row {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 65px) 32px;
+    justify-content: start;
+    align-items: center;
+    gap: 8px;
+    margin: 3px 0;
+    font-size: 11px;
+}
+
+.right-panel .results-grid .field-row label {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.right-panel .results-grid .field-row input {
+    width: 100%;
+    min-width: 0;
+    padding: 6px 3px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.right-panel .results-grid .field-row .unit {
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+
+/* ==================================================
+   RESULTS TABLE – NAVY HEADER & ROUNDED CORNERS
+================================================== */
+
+.results-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 18px;
+    border: 1px solid #dce3e8;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+/* Table */
+.results-table {
+    width: 100%;
+    min-width: 1150px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Navy table header */
+.results-table th {
+    background: #26384a;
+    color: #ffffff;
+    padding: 12px 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: none;
+}
+
+/* Rounded top corners */
+.results-table thead th:first-child {
+    border-top-left-radius: 11px;
+}
+
+.results-table thead th:last-child {
+    border-top-right-radius: 11px;
+}
+
+/* Table cells */
+.results-table td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #e7ebef;
+    color: #344054;
+    white-space: nowrap;
+}
+
+/* Alternating row colors */
+.results-table tbody tr:nth-child(even) {
+    background: #f7f9fb;
+}
+
+.results-table tbody tr:hover {
+    background: #edf3f8;
+}
+
+/* Remove last row border */
+.results-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Empty state */
+.results-table .empty-state {
+    text-align: center;
+    padding: 25px;
+    color: #8795a1;
+}
+
+
+/* =====================================================
+   GLOBAL STATUS PILL
+===================================================== */
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   STATUS COLORS – GLOBAL AND LOCAL
+===================================================== */
+
+/* SUCCESS – GREEN */
+.status-pill.status-success,
+.inline-message.status-success {
+    color: #26734d;
+    background: #e8f4ed;
+    border-color: #b9ddc8;
+}
+
+.status-pill.status-success .status-dot {
+    background: #3b8b65;
+}
+
+/* INFO – BLUE */
+.status-pill.status-info,
+.inline-message.status-info {
+    color: #2673a8;
+    background: #eaf2f9;
+    border-color: #c5d9eb;
+}
+
+.status-pill.status-info .status-dot {
+    background: #2673a8;
+}
+
+/* WARNING – ORANGE */
+.status-pill.status-warning,
+.inline-message.status-warning {
+    color: #b96520;
+    background: #fff3e5;
+    border-color: #f2d0a8;
+}
+
+.status-pill.status-warning .status-dot {
+    background: #d97735;
+}
+
+/* ERROR – RED */
+.status-pill.status-error,
+.inline-message.status-error {
+    color: #b04438;
+    background: #fbeceb;
+    border-color: #e9bfbb;
+}
+
+.status-pill.status-error .status-dot {
+    background: #b04438;
+}
+
+/* =====================================================
+   LOCAL CALCULATION MESSAGES
+===================================================== */
+
+.inline-message {
+    display: block;
+    padding: 6px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.inline-message:empty {
+    background: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+}
+
+/* LAUNCHER NAVIGATION */
+
+.center-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.launcher-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 13px;
+
+    color: #52677c;
+    background: #f1f5f9;
+    border: 1px solid #dce4ec;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.launcher-back:hover {
+    color: #ffffff;
+    background: #26384a;
+    border-color: #26384a;
+}
+
+.launcher-back span {
+    font-size: 16px;
+}

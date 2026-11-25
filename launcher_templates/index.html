@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ITUN App Collection Launcher</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="background-glow glow-one"></div>
+<div class="background-glow glow-two"></div>
+
+<main class="page-container">
+
+    <!-- HEADER -->
+    <header class="topbar">
+
+        <div class="brand">
+
+            <!-- Hier euer Logo einsetzen -->
+            <div class="brand-logo">
+                <img src="{{ url_for('static', filename='logo.png') }}"
+                     alt="ITUN Logo">
+            </div>
+
+            <div class="brand-text">
+                <div class="brand-subtitle">ITUN WEB APP CENTER</div>
+            </div>
+
+        </div>
+
+        <div class="environment">
+            <span class="status-dot"></span>
+            READY
+        </div>
+
+    </header>
+
+
+    <!-- HERO -->
+<section class="hero">
+
+    <h1>Welcome<span>.</span></h1>
+
+    <div class="workspace-message">
+        Your learning or teaching workspace is ready.
+    </div>
+
+    <p class="hero-description">
+        Select an application to start your calculations.
+    </p>
+
+</section>
+
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="messages">
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- APPLICATIONS -->
+    <section class="application-grid">
+
+        {% for app_id, application in applications.items() %}
+
+        <a class="app-card {{ application.color }}"
+           href="{{ url_for('launch', app_id=app_id) }}">
+
+
+            <div class="card-content">
+
+
+                <h2>{{ application.name }}</h2>
+
+                <p>{{ application.description }}</p>
+
+            </div>
+
+
+            <div class="card-footer">
+                <span>OPEN APPLICATION</span>
+                <span class="arrow-line">→</span>
+            </div>
+
+        </a>
+
+        {% endfor %}
+
+    </section>
+
+
+    <footer class="footer">
+        <span>VERSION 1.0</span>
+    </footer>
+
+</main>
+
+</body>
+</html>

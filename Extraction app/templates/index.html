@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="app-root" content="{{ request.script_root }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#26384a">
+  <title>Liquid-Liquid Extraction App</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- LEFT: PROCESS REPRESENTATION -->
+  <aside class="panel left-panel">
+    <header class="panel-heading">
+      <h1>Liquid-Liquid Extraction<br><span>Representation</span></h1>
+    </header>
+
+    <section class="phase-selector">
+      <h2 class="side-title">Phase flow</h2>
+      <div class="segmented phase-switch" role="group" aria-label="Phase flow">
+        <button class="segment active" data-flow="cross" type="button">Cross-current</button>
+        <button class="segment" data-flow="counter" type="button">Counter-current</button>
+      </div>
+    </section>
+
+    <section class="process-card">
+      <h3>Extraction process</h3>
+      <img id="flowchartImage"
+           src="{{ url_for('static', filename='images/CrossFlow.png') }}"
+           alt="Schematic representation of the extraction process">
+      <div class="stage-count">
+        <strong id="stageCount">0</strong>
+      </div>
+    </section>
+
+      <div class="logo-container">
+          <img src="{{ url_for('static', filename='images/logo1.png') }}" alt="TU Bergakademie Freiberg">
+          <img src="{{ url_for('static', filename='images/logo2.png') }}" alt="ITUN">
+          <img src="{{ url_for('static', filename='images/logo3.png') }}" alt="CrossLab">
+      </div>
+    <p class="teaching-note">The use of this app is only permitted for teaching purposes!</p>
+  </aside>
+
+  <!-- CENTER: DIAGRAM / VARIABLES / RESULTS -->
+  <main class="panel center-panel">
+        <a
+        href="http://127.0.0.1:5000/back/extraction"
+        class="launcher-back">
+        <span>←</span>
+        Back to Launcher
+    </a>
+
+    <div class="center-topbar">
+      <span class="status-pill">
+        <span class="status-dot"></span>
+        <span id="appStatus">Ready</span>
+      </span>
+    </div>
+
+    <section class="diagram-card">
+      <div class="diagram-toolbar">
+        <div>
+          <h2 id="diagramTitle">Ternary diagram · 1-2-3</h2>
+        </div>
+
+        <div class="scale-switch-wrap" id="ternaryScaleControls">
+          <span class="scale-caption">Diagram scale</span>
+          <div class="segmented scale-switch" role="group" aria-label="Ternary diagram scale">
+            <button class="segment active" id="ternDiagButton" type="button">Ternary diagram</button>
+            <button class="segment" id="autoScaleButton" type="button">Autoscale</button>
+          </div>
+        </div>
+      </div>
+      <div id="mainChart" class="chart-wrap"></div>
+    </section>
+
+    <div class="view-switch-row">
+      <span class="switch-caption">Display</span>
+      <div class="segmented" role="group" aria-label="Choose display">
+        <button class="segment active" data-view="variables" type="button">Show variables</button>
+        <button class="segment" data-view="results" type="button">Show results</button>
+      </div>
+    </div>
+
+
+<section class="info-card variables-legend" id="variablesView">
+
+    <div class="info-card-heading">
+        <div>
+            <h3>Variables &amp; Nomenclature</h3>
+            <p class="legend-subtitle">
+                Overview of the symbols, variables and equations used
+                throughout the application.
+            </p>
+        </div>
+    </div>
+
+    <!-- 1. MATERIAL STREAMS -->
+    <div class="legend-section">
+        <h4>1. Material streams</h4>
+
+        <div class="legend-table-wrapper">
+            <table class="legend-table stream-legend">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Feed</th>
+                        <th>Solvent</th>
+                        <th>Extract</th>
+                        <th>Raffinate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Molar flow</th>
+                        <td><i>F&#775;</i></td>
+                        <td><i>S&#775;</i></td>
+                        <td><i>E&#775;</i></td>
+                        <td><i>R&#775;</i></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Mole fraction of solute (3)
+                            <small>(Left phase: x / right phase: y)</small>
+                        </th>
+                        <td><i>x<sub>F</sub></i></td>
+                        <td><i>y<sub>S</sub></i></td>
+                        <td><i>y<sub>E</sub></i></td>
+                        <td><i>x<sub>R</sub></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 2. SUPERSCRIPTS -->
+    <div class="legend-section">
+        <h4>2. Subscripts / Superscripts</h4>
+
+        <div class="legend-table-wrapper">
+            <table class="legend-table">
+                <tbody>
+                    <tr>
+                        <th>Stage index</th>
+                        <td><i>j</i></td>
+                        <td><i>j = {1, 2, ..., n}</i></td>
+                    </tr>
+                    <tr>
+                        <th>Boundary condition / specified target</th>
+                        <td><i>target</i></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>At minimum solvent/feed ratio condition</th>
+                        <td><i>v<sub>min</sub></i></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 3. PROCESS PARAMETERS AND RESULTS -->
+    <div class="legend-section">
+        <h4>3. Process parameters</h4>
+
+        <div class="legend-two-columns">
+
+            <!-- LEFT: PROCESS PARAMETERS -->
+            <div class="legend-column">
+
+                <div class="legend-table-wrapper">
+                    <table class="legend-table">
+                        <tbody>
+                            <tr>
+                                <th>Temperature</th>
+                                <td><i>T</i></td>
+                            </tr>
+                            <tr>
+                                <th>Minimum solvent/feed ratio</th>
+                                <td><i>ν<sub>min</sub></i></td>
+                            </tr>
+                            <tr>
+                                <th>Solvent/feed ratio</th>
+                                <td><i>ν</i></td>
+                            </tr>
+                            <tr>
+                                <th>Solvent/feed ratio factor</th>
+                                <td><i>f</i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+              <!-- CROSS-CURRENT EQUATIONS -->
+              <div class="legend-mode-content cross-current-equations"
+                  data-legend-mode="cross">
+
+                  <div class="legend-equation">
+                      <span class="equation-formula">
+                          ν<sup>1</sup> = f · ν<sub>min</sub>
+                          = Ṡ<sup>1</sup> / Ḟ
+                      </span>
+                      <span>Solvent/feed ratio at stage 1</span>
+                  </div>
+
+                  <div class="legend-equation">
+                      <span class="equation-formula">
+                          ν<sup>j</sup> =
+                          Ṡ<sup>j</sup> / Ṙ<sup>j−1</sup>
+                      </span>
+                      <span>Solvent/feed ratio at stage j</span>
+                  </div>
+
+              </div>
+
+              <!-- COUNTER-CURRENT EQUATION -->
+              <div class="legend-mode-content hidden" data-legend-mode="counter">
+                  <div class="legend-equation">
+                      <span class="equation-formula">
+                          ν = f · ν<sub>min</sub>
+                          = Ṡ / Ḟ
+                      </span>
+                      <span>Overall solvent/feed ratio</span>
+                  </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT: CHARACTERISTIC VALUES -->
+            <div class="legend-column">
+
+                <div class="legend-table-wrapper">
+                    <table class="legend-table">
+                        <tbody>
+                            <tr>
+                                <th>Raffinate/feed ratio</th>
+                                <td><i>ξ</i></td>
+                                <td>
+                                    <i>ξ = R&#775;<sup>n</sup> / F&#775;</i>
+                                </td>
+                            </tr>
+
+                            <!-- CROSS-CURRENT YIELD -->
+                            <tr class="legend-mode-content" data-legend-mode="cross">
+                                <th>
+                                    Yield of solute (3)
+                                    <small>(Cross-current)</small>
+                                </th>
+                                <td><i>Y<sub>E,3</sub></i></td>
+                                <td>
+                                    <i>
+                                        Y<sub>E,3</sub> =
+                                        <span class="fraction">
+                                            <span>
+                                                ∑<sub>j=1</sub><sup>n</sup>
+                                                y<sub>E</sub><sup>j</sup>
+                                                E&#775;<sup>j</sup>
+                                            </span>
+                                            <span>
+                                                x<sub>F</sub>F&#775; +
+                                                ∑<sub>j=1</sub><sup>n</sup>
+                                                y<sub>S</sub>S&#775;<sup>j</sup>
+                                            </span>
+                                        </span>
+                                        · 100%
+                                    </i>
+                                </td>
+                            </tr>
+
+                            <!-- COUNTER-CURRENT YIELD -->
+                            <tr class="legend-mode-content hidden" data-legend-mode="counter">
+                                <th>
+                                    Yield of solute (3)
+                                    <small>(Counter-current)</small>
+                                </th>
+                                <td><i>Y<sub>E,3</sub></i></td>
+                                <td>
+                                    <i>
+                                        Y<sub>E,3</sub> =
+                                        <span class="fraction">
+                                            <span>
+                                                y<sub>E</sub><sup>1</sup>
+                                                E&#775;<sup>1</sup>
+                                            </span>
+                                            <span>
+                                                x<sub>F</sub>F&#775; +
+                                                y<sub>S</sub>S&#775;
+                                            </span>
+                                        </span>
+                                        · 100%
+                                    </i>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Distribution coefficient of solute (3)</th>
+                                <td><i>K<sub>3</sub></i></td>
+                                <td><i>K<sub>3</sub> = y<sub>3</sub> / x<sub>3</sub></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<section class="info-card hidden" id="resultsView">
+    <div class="info-card-heading">
+        <div>
+            <p class="eyebrow">CALCULATION OUTPUT</p>
+            <h2>Extraction results</h2>
+        </div>
+        <span class="small-tag" id="resultsCount">0 calculations</span>
+    </div>
+
+    <div class="table-wrap">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Mixture</th>
+                    <th>T (K)</th>
+                    <th>Phase flow</th>
+                    <th>x<sub>F</sub></th>
+                    <th>y<sub>S</sub></th>
+                    <th>f</th>
+                    <th>Solvent add.</th>
+                    <th>Boundary cond.</th>
+                    <th>n</th>
+                    <th>Y<sub>E,3</sub> (%)</th>
+                    <th>ν<sub>min</sub></th>
+                    <th>ν<sup>1</sup></th>
+                    <th>ξ</th>
+                    <th>x<sub>R</sub><sup>n</sup></th>
+                    <th>y<sub>E</sub><sup>1</sup></th>
+                    <th>(y<sub>E</sub><sup>1</sup>)<sub>νmin</sub></th>
+                </tr>
+            </thead>
+
+            <tbody id="resultsTableBody">
+                <tr>
+                    <td colspan="16" class="empty-state">
+                        No separation stage calculations yet.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+  </main>
+
+  <!-- RIGHT: INPUTS -->
+  <aside class="panel right-panel">
+    <div class="right-panel-inner">
+
+      <!-- INPUT 1 -->
+      <h2 class="side-title">Input 1</h2>
+      <section class="control-section">
+        <label class="field-label" for="mixture">Mixture</label>
+        <select id="mixture">
+          <option value="acetone-water-toluene">Water-Toluene-Acetone</option>
+          <option value="acetic-acid-water-ethyl-butanoate">Ethyl butanoate-Water-Acetic acid</option>
+        </select>
+
+      <div class="field-row">
+        <label for="temperature">T</label>
+        <select id="temperature">
+          <option value="283.15">283.15</option>
+          <option value="303.15">303.15</option>
+          <option value="323.15">323.15</option>
+        </select>
+        <span class="unit">K</span>
+      </div>
+
+        <button class="primary-button" id="calculateLLE" type="button">Calculate LLE</button>
+        <div class="status-help-row">
+          <p class="inline-message" id="lleMessage" role="status" aria-live="polite"></p>
+          <button class="help-icon" type="button" data-info="lle" aria-label="Information about LLE">?</button>
+        </div>
+      </section>
+
+      <!-- INPUT 2 -->
+      <h2 class="side-title section-title">Input 2</h2>
+      <section class="control-section">
+
+        <!-- Feed and solvent parameters -->
+        <div class="field-row">
+          <label for="feedComposition">x<sub>F</sub></label>
+          <input id="feedComposition" type="number" min="0" max="1" step="0.01" value="0.45">
+          <span class="unit">mol/mol</span>
+        </div>
+
+        <div class="field-row">
+          <label for="solventComposition">y<sub>S</sub></label>
+          <input id="solventComposition" type="number" min="0" max="0.99" step="0.01" value="0.00">
+          <span class="unit">mol/mol</span>
+        </div>
+
+        <div class="field-row">
+          <label for="solventFactor">f</label>
+          <input id="solventFactor" type="number" min="1" step="0.01" value="1">
+          <span class="unit">–</span>
+        </div>
+
+        <!-- SOLVENT ADDITION + CALCULATION CRITERION -->
+
+
+            <!-- SOLVENT ADDITION -->
+            <div class="input-option">
+                <div class="option-heading">
+                    <span class="option-title">Solvent addition on each stage</span>
+                </div>
+
+                <div class="inline-choice" id="solventModeSwitch">
+                    <span class="choice-label active" data-label="flow">
+                        Ṡ<sup>j</sup> = const.
+                    </span>
+
+                    <label class="mini-switch">
+                        <input type="checkbox" id="solventModeToggle">
+                        <span class="mini-switch-slider"></span>
+                    </label>
+
+                    <span class="choice-label" data-label="ratio">
+                        ν<sup>j</sup> = const.
+                    </span>
+                </div>
+
+                <p class="option-hint" id="solventDisabledHint" hidden>
+                    <span class="hint-icon">ⓘ</span>
+                    Disabled for counter-current operation.
+                </p>
+            </div>
+
+            <div class="options-divider"></div>
+
+            <!-- CALCULATION CRITERION -->
+            <div class="input-option">
+                <div class="option-heading">
+                    <span class="option-title">Calculation criterion</span>
+                </div>
+
+                <div class="inline-choice" id="criterionSwitch">
+                    <span class="choice-label active" data-label="xr">
+                        x<sub>R</sub><sup>target</sup>
+                    </span>
+
+                    <label class="mini-switch">
+                        <input type="checkbox" id="criterionToggle">
+                        <span class="mini-switch-slider"></span>
+                    </label>
+
+                    <span class="choice-label" data-label="ye">
+                        Y<sub>E,3</sub><sup>target</sup>
+                    </span>
+                </div>
+
+                <div class="criterion-inputs" id="xrCriterionFields">
+                    <div class="field-row">
+                        <label for="xrLimit">x<sub>R</sub><sup>target</sup></label>
+                        <input id="xrLimit" type="number" min="0.02" max="1" step="0.01" value="0.10">
+                        <span class="unit">mol/mol</span>
+                    </div>
+                </div>
+
+                <div class="criterion-inputs hidden" id="yeCriterionFields">
+                    <div class="field-row">
+                        <label for="yeLimit">Y<sub>E,3</sub><sup>target</sup></label>
+                        <input id="yeLimit" type="number" min="0" max="99.99" step="0.1" value="90">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+
+      
+
+      <button class="primary-button calculate-extraction" id="calculateExtraction" type="button">
+        Calculate extraction process
+      </button>
+
+      <div class="status-help-row">
+        <p class="inline-message" id="extractionMessage" role="status" aria-live="polite"></p>
+        <button class="help-icon" type="button" data-info="extraction" aria-label="Information about extraction calculation">?</button>
+      </div>
+      </section>
+
+     <!-- RESULTS -->
+<h2 class="side-title section-title">Results</h2>
+
+<section class="control-section results-fields">
+
+    <div class="results-grid">
+
+        <div class="field-row">
+            <label for="resultN">n</label>
+            <input id="resultN" type="text" placeholder="—" readonly>
+            <span class="unit">–</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultYield">Y<sub>E,3</sub></label>
+            <input id="resultYield" type="text" placeholder="—" readonly>
+            <span class="unit">%</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultNuMin">ν<sub>min</sub></label>
+            <input id="resultNuMin" type="text" placeholder="—" readonly>
+            <span class="unit">–</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultNu">ν<sup>1</sup></label>
+            <input id="resultNu" type="text" placeholder="—" readonly>
+            <span class="unit">–</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultXR">x<sub>R</sub><sup>n</sup></label>
+            <input id="resultXR" type="text" placeholder="—" readonly>
+            <span class="unit">mol/mol</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultYE1">y<sub>E</sub><sup>1</sup></label>
+            <input id="resultYE1" type="text" placeholder="—" readonly>
+            <span class="unit">mol/mol</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultXi">ξ</label>
+            <input id="resultXi" type="text" placeholder="—" readonly>
+            <span class="unit">–</span>
+        </div>
+
+        <div class="field-row">
+            <label for="resultYEvMin">
+                y<sub>E</sub><sup>1</sup>,min
+            </label>
+            <input id="resultYEvMin" type="text" placeholder="—" readonly>
+            <span class="unit">mol/mol</span>
+        </div>
+
+    </div>
+
+</section>
+
+      <!-- DIAGRAM SELECTOR -->
+      <h2 class="side-title section-title">Choose diagram</h2>
+      <section class="control-section diagram-choice">
+        <div class="diagram-selector" id="diagramSelector">
+          <div class="selector-track" aria-hidden="true">
+            <span class="selector-highlight" id="diagramHighlight"></span>
+            <span class="selector-option-label">1–2–3</span>
+            <span class="selector-option-label">K–x</span>
+          </div>
+          <input class="selector-range" id="diagramRange" type="range" min="0" max="1" step="1" value="0"
+                 aria-label="Choose diagram: 1-2-3 or K-x">
+          <div class="selector-readout">
+            <span id="diagramPosition">DIAGRAM 01 / 02</span>
+            <strong id="diagramSelection">Ternary diagram · 1–2–3</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACTIONS -->
+      <div class="button-row">
+        <button class="secondary-button" id="saveButton" type="button">Save</button>
+        <button class="secondary-button" id="resetButton" type="button">Reset</button>
+      </div>
+
+      <div class="status-help-row">
+        <p class="inline-message" id="generalMessage" role="status" aria-live="polite"></p>
+        <button class="help-icon" type="button" data-info="general" aria-label="Information about save and reset">?</button>
+      </div>
+
+      <!-- INFORMATION -->
+      <section class="information-output">
+        <div class="information-heading">
+          <span class="information-symbol">i</span>
+          <h3>Information</h3>
+        </div>
+        <div id="infoOutput">
+          <p>Select one of the question mark buttons to display additional information.</p>
+        </div>
+      </section>
+
+      <section class="help-card">
+        <h3>Help &amp; Information</h3>
+        <ol>
+          <li>Select a ternary mixture and temperature.</li>
+          <li>Calculate the liquid-liquid equilibrium.</li>
+          <li>Enter feed and solvent compositions.</li>
+          <li>Select the solvent addition mode and calculation criterion.</li>
+          <li>Calculate the extraction process.</li>
+        </ol>
+        <a class="text-button" href="{{ url_for('static', filename='user_manual.pdf') }}" download>
+          Download user manual
+        </a>
+      </section>
+
+    </div>
+  </aside>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="{{ url_for('static', filename='js/diagrams.js') }}"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
