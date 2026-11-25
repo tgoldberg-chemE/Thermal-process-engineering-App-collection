@@ -688,7 +688,7 @@ document.querySelectorAll("[data-flow]").forEach(button => {
         if (flowchartImage) {
             flowchartImage.src = isCounterFlow
                 ? `${APP_ROOT}/static/images/CounterCurrent.png`
-                : `${APP_ROOT}/static/images/watermark.png`;
+                : `${APP_ROOT}/static/images/CrossFlow.png`;
         }
 
         if (solventToggle) {
@@ -1090,6 +1090,25 @@ function performReset() {
     clearResults();
 
     resultsSaved = false;
+
+    // Store reset information
+    setCalculationStatus(
+        "general",
+        "success",
+        "Reset completed!",
+        {
+            title: "Reset Information",
+            paragraphs: [
+                "All previous data has been cleared.",
+                "Resetting removes all previous calculation results."
+            ],
+            summary:
+                "Please save your data before resetting if you need it later."
+        }
+    );
+
+    // Show confirmation
+    setMainStatus("Reset completed!", "success");
 }
 
 
