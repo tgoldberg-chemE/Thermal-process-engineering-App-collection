@@ -633,13 +633,9 @@
     <div class="caloric-knobs">
 
         <div class="caloric-control">
-            <label for="caloricA">q<sup>B</sup></label>
-            <div class="q-knob" data-target="caloricA">
-                <span class="q-knob-stop left"></span>
-                <span class="q-knob-stop right"></span>
-                <span class="q-knob-pointer"></span>
-                <span class="q-knob-center"></span>
-            </div>
+            <label for="caloricA-slider">q<sup>B</sup></label>
+            <input type="range" id="caloricA-slider" class="q-slider"
+                   min="0.7" max="1.0" step="0.01" value="1.0">
             <div class="caloric-input-row">
                 <input type="number" id="caloricA"
                        min="0.7" max="1.0" step="0.01" value="1.0">
@@ -647,13 +643,9 @@
         </div>
 
         <div class="caloric-control">
-            <label for="caloricF">q<sup>F</sup></label>
-            <div class="q-knob" data-target="caloricF">
-                <span class="q-knob-stop left"></span>
-                <span class="q-knob-stop right"></span>
-                <span class="q-knob-pointer"></span>
-                <span class="q-knob-center"></span>
-            </div>
+            <label for="caloricF-slider">q<sup>F</sup></label>
+            <input type="range" id="caloricF-slider" class="q-slider"
+                   min="-0.05" max="1.05" step="0.01" value="1.0">
             <div class="caloric-input-row">
                 <input type="number" id="caloricF"
                        min="-0.05" max="1.05" step="0.01" value="1.0">
@@ -661,13 +653,9 @@
         </div>
 
         <div class="caloric-control">
-            <label for="caloricE">q<sup>D</sup></label>
-            <div class="q-knob" data-target="caloricE">
-                <span class="q-knob-stop left"></span>
-                <span class="q-knob-stop right"></span>
-                <span class="q-knob-pointer"></span>
-                <span class="q-knob-center"></span>
-            </div>
+            <label for="caloricE-slider">q<sup>D</sup></label>
+            <input type="range" id="caloricE-slider" class="q-slider"
+                   min="1.0" max="1.05" step="0.01" value="1.0">
             <div class="caloric-input-row">
                 <input type="number" id="caloricE"
                        min="1.0" max="1.05" step="0.01" value="1.0">
@@ -676,7 +664,6 @@
 
     </div>
 </div>
-
 
 
           <button
