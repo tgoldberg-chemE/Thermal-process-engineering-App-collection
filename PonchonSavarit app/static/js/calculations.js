@@ -1029,6 +1029,11 @@ async function performReset() {
         $("caloricF").value = "1.00";
         $("caloricE").value = "1.00";
 
+        // Reset caloric sliders to their default positions
+        $("caloricA-slider").value = "1.00";
+        $("caloricF-slider").value = "1.00";
+        $("caloricE-slider").value = "1.00";
+
         // 2. Reset calculated output fields
         $("totalStages").value = "0";
         $("minReflux").value = "0";

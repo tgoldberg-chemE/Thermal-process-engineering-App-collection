@@ -572,21 +572,21 @@ function updateVariablePreview() {
 const caloricInputs = [
     {
         element: $("caloricA"),
-        defaultValue: 0.8,
+        defaultValue: 1.0,
         min: 0.7,
         max: 1.0
     },
     {
         element: $("caloricF"),
         defaultValue: 1.0,
-        min: -0.2,
-        max: 1.1
+        min: -0.05,
+        max: 1.05
     },
     {
         element: $("caloricE"),
         defaultValue: 1.0,
         min: 1.0,
-        max: 1.1
+        max: 1.05
     }
 ];
 
@@ -772,163 +772,100 @@ function renderResultsTable() {
 }
 
 
+
 /* ========================================
-   CALORIC FACTORS – KNOB SYNCHRONISATION
+   CALORIC FACTORS – SLIDER SYNCHRONISATION
 ======================================== */
 
-function initializeCaloricKnobs() {
+function initializeCaloricSliders() {
 
-    document.querySelectorAll(".q-knob").forEach(knob => {
-
-        const input = document.getElementById(
-            knob.dataset.target
-        );
-
-        if (!input) return;
-
-        const min = Number(input.min);
-        const max = Number(input.max);
-        const step = Number(input.step) || 0.01;
-
-        const pointer = knob.querySelector(
-            ".q-knob-pointer"
-        );
-
-        let dragging = false;
-
-        function updateKnob(value) {
-
-            const normalized = Math.max(
-                0,
-                Math.min(1, (value - min) / (max - min))
-            );
-
-            const angle = -135 + normalized * 270;
-
-            pointer.style.transform =
-                `translateX(-50%) rotate(${angle}deg)`;
-
-            knob.setAttribute("aria-valuenow", value);
+    const sliderPairs = [
+        {
+            slider: "caloricA-slider",
+            input: "caloricA"
+        },
+        {
+            slider: "caloricF-slider",
+            input: "caloricF"
+        },
+        {
+            slider: "caloricE-slider",
+            input: "caloricE"
         }
+    ];
+
+    sliderPairs.forEach(pair => {
+
+        const slider = document.getElementById(pair.slider);
+        const input = document.getElementById(pair.input);
+
+        if (!slider || !input) return;
+
+        const min = Number(slider.min);
+        const max = Number(slider.max);
+        const step = Number(slider.step) || 0.01;
 
         function updateInput(value) {
 
+            input.value = Number(value).toFixed(2);
+
+            // Notify existing calculation listeners
+            input.dispatchEvent(new Event("input", {
+                bubbles: true
+            }));
+        }
+
+        function updateSlider(value) {
+
+            if (value === "" || !Number.isFinite(Number(value))) {
+                return;
+            }
+
             const clamped = Math.max(
                 min,
-                Math.min(max, value)
+                Math.min(max, Number(value))
             );
 
             const stepped =
                 Math.round((clamped - min) / step) * step + min;
 
-            const decimals = Math.max(
-                0,
-                (String(step).split(".")[1] || "").length
-            );
-
-            input.value = stepped.toFixed(decimals);
-
-            updateKnob(Number(input.value));
+            slider.value = stepped;
+            input.value = stepped.toFixed(2);
         }
 
-        // Numeric input -> rotary knob
+        // Slider -> numeric input
+        slider.addEventListener("input", () => {
+            updateInput(slider.value);
+        });
+
+        // Numeric input -> slider
         input.addEventListener("input", () => {
+
+            if (input.value === "") return;
 
             const value = Number(input.value);
 
-            if (input.value !== "" && Number.isFinite(value)) {
-                updateKnob(value);
+            if (Number.isFinite(value)) {
+                slider.value = value;
             }
         });
 
+        // Validate and synchronize after editing
         input.addEventListener("change", () => {
 
             if (input.value === "") {
-                updateInput(min);
+                updateSlider(min);
                 return;
             }
 
-            updateInput(Number(input.value));
+            updateSlider(input.value);
         });
 
-        // Rotary knob -> numeric input
-        function setFromPointer(event) {
-
-            const rect = knob.getBoundingClientRect();
-
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            const dx = event.clientX - centerX;
-            const dy = event.clientY - centerY;
-
-            let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-            // Restrict the dial to a 270° rotation
-            angle = Math.max(-135, Math.min(135, angle));
-
-            const normalized = (angle + 135) / 270;
-
-            const value = min + normalized * (max - min);
-
-            updateInput(value);
-        }
-
-        knob.addEventListener("pointerdown", event => {
-
-            dragging = true;
-            knob.setPointerCapture(event.pointerId);
-
-            setFromPointer(event);
-        });
-
-        knob.addEventListener("pointermove", event => {
-
-            if (!dragging) return;
-
-            setFromPointer(event);
-        });
-
-        knob.addEventListener("pointerup", () => {
-            dragging = false;
-        });
-
-        knob.addEventListener("pointercancel", () => {
-            dragging = false;
-        });
-
-        // Keyboard support
-        knob.addEventListener("keydown", event => {
-
-            let value = Number(input.value);
-
-            if (event.key === "ArrowUp" ||
-                event.key === "ArrowRight") {
-                value += step;
-            }
-            else if (event.key === "ArrowDown" ||
-                     event.key === "ArrowLeft") {
-                value -= step;
-            }
-            else if (event.key === "Home") {
-                value = min;
-            }
-            else if (event.key === "End") {
-                value = max;
-            }
-            else {
-                return;
-            }
-
-            event.preventDefault();
-            updateInput(value);
-        });
-
-        // Initial position
-        updateInput(Number(input.value));
+        // Initial synchronization
+        updateSlider(input.value);
 
     });
 }
 
-initializeCaloricKnobs();
+initializeCaloricSliders();
 
