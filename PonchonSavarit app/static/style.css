@@ -3004,3 +3004,110 @@ body {
 .launcher-back span {
     font-size: 16px;
 }
+/* ========================================
+   Caloric sliders – blue square knobs
+   with thin grey tracks
+======================================== */
+
+.q-slider {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 14px;
+    border: none;
+    padding: 0;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Track: Chrome, Edge, Safari */
+.q-slider::-webkit-slider-runnable-track {
+    height: 3px;
+    background: #e5eaf0;
+    border-radius: 3px;
+}
+
+/* Square blue thumb: Chrome, Edge, Safari */
+.q-slider::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin-top: -7.5px;
+    border-radius: 4px;
+    background: #2878a8;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    cursor: grab;
+}
+
+/* Track: Firefox */
+.q-slider::-moz-range-track {
+    height: 3px;
+    background: #e5eaf0;
+    border-radius: 3px;
+}
+
+/* Square blue thumb: Firefox */
+.q-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: #2878a8;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+    cursor: grab;
+}
+
+/* Active state */
+.q-slider:active::-webkit-slider-thumb {
+    background: #15577f;
+    cursor: grabbing;
+}
+
+.q-slider:active::-moz-range-thumb {
+    background: #15577f;
+    cursor: grabbing;
+}
+
+/* Focus */
+.q-slider:focus-visible {
+    outline: 2px solid #2878a8;
+    outline-offset: 5px;
+}
+
+/* Layout of caloric controls */
+.caloric-knobs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.caloric-control {
+    display: grid;
+    grid-template-columns: 45px minmax(0, 1fr) 65px;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.caloric-control label {
+    margin: 0;
+}
+
+.caloric-control .q-slider {
+    width: 100%;
+    min-width: 0;
+}
+
+.caloric-input-row {
+    display: contents;
+}
+
+.caloric-input-row input[type="number"] {
+    width: 65px;
+    min-width: 0;
+}
